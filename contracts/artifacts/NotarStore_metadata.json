@@ -98,6 +98,30 @@
 						"type": "string"
 					}
 				],
+				"name": "getDocumentData",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_storeDate",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_documentHash",
+						"type": "string"
+					}
+				],
 				"name": "getDocumentbyHash",
 				"outputs": [
 					{
@@ -185,11 +209,11 @@
 	},
 	"sources": {
 		"contracts/NotarStore.sol": {
-			"keccak256": "0x7bd26d19649149e4ef8dce18a180198789a11acfd09112725659b0c38824f3d0",
+			"keccak256": "0x185a0916de1505ab33859fb78c2c1492d39d1c669828441d4540066785600a83",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://6ead867890c6174466ef2b1bdf5a270efe848320452cc3fe68adb6e12b7a896d",
-				"dweb:/ipfs/QmWBm7TuPvJRguGNgpFcrJCEDQms37bvdMYeFjbA5HnVPd"
+				"bzz-raw://a8d143d16245b2f37608c201726b37d3631819315a1e1e5347715f3a6ef02f8f",
+				"dweb:/ipfs/Qmetxh6faJxZdfqAnsbLW6nhnSZ3Y8mBwbK7Qk83nsn1YN"
 			]
 		}
 	},

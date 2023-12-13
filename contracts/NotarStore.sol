@@ -28,6 +28,13 @@ contract NotarStore{
     // stored Hashes
     mapping(string => bool) Hashes;
 
+    //only the owner can modify
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
+
+    //function for storing the Document on the Blockchain
     function Store(string memory _documentHash, address _owner) public{
         require(!Hashes[_documentHash], "File already stored");
 
@@ -39,10 +46,12 @@ contract NotarStore{
         emit StoreDocument(_documentHash, _owner, _storeDate);
     }
 
+    //Method for returning the total Number of Documents
     function getCount() public view returns(uint) {
      return documents.length;
     }
 
+    //Method for getting all Documents
     function getDocuments() public view returns (Document[] memory){
         Document[] memory documentArray = new Document[](documents.length);
 
@@ -53,8 +62,10 @@ contract NotarStore{
         return documentArray;
     }
 
+
+    // Method for returning a specific Document by a given Hash
     function getDocumentbyHash(string memory _documentHash) public view returns (Document memory){
-        require(Hashes[_documentHash],"False Hash");
+        require(Hashes[_documentHash],"False Hash or Document does not exist");
 
         Document memory document;
         Document memory result;
@@ -67,6 +78,13 @@ contract NotarStore{
             }
         }
         return document;
+    }
+
+    //Method for getting the Information about a Document
+    function getDocumentData(string memory _documentHash) public view returns (address _owner, uint256 _storeDate){
+        Document memory document = getDocumentbyHash(_documentHash);
+
+        return(document.owner,document.storeDate);
     }
 
 }
