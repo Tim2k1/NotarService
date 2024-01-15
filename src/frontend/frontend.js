@@ -48,4 +48,8 @@ function closePopup() {
     hashPopup.style.display = 'none';
 }
 
+function findDocumentByHash(){
+    //TODO mit getDocumentbyHash aus Backend
+}
+
 
