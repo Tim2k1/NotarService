@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notar Blockchain</title>
+    <!-- Bootstrap CSS einbinden -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Eigene CSS-Datei einbinden -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="logo.png" width="auto" height="50" class="d-inline-block align-top" alt="Logo">
+            
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Dokument Hochladen</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Dokument Finden</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Notar Blockchain</h1>
+
+        <!-- Formular zum Hochladen von Dokumenten -->
+        <form id="uploadForm" class="mb-4">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="fileInput" accept=".pdf, .doc, .docx">
+                <label class="custom-file-label" for="fileInput">Dokument auswählen</label>
+            </div>
+            <button type="button" class="btn btn-primary mt-2" onclick="uploadDocument()">Dokument hochladen</button>
+        </form>
+
+        <!-- Anzeige für hochgeladene Dokumente -->
+        <div id="documentList">
+            <h2>Übersicht der Dokumente</h2>
+            <!-- Hier werden die hochgeladenen Dokumente angezeigt -->
+        </div>
+
+        <!-- Eingabefeld für Hash -->
+        <div class="mt-4">
+            <label for="hashInput">Dokument nach Hash suchen:</label>
+            <input type="text" id="hashInput" class="form-control">
+            <button type="button" class="btn btn-info mt-2" onclick="findDocumentByHash()">Dokument finden</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS und eigene JS-Datei einbinden -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="frontend.js"></script>
+</body>
+</html>

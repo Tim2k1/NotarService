@@ -1,6 +1,6 @@
 import web3 from './web3';
 
-const address = 'TODO';
+const address = '0x6ab1dc99446ba8dbc7c2cc30d84d88eb62b97094';
 
 const abi = [
 	{
