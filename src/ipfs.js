@@ -1,7 +1,7 @@
-const IPFS = require('ipfs-api');
+//const IPFS = require('ipfs-api');
 
 //using local Installation of IPFS waiting default on port 5001
-const ipfs = new IPFS({host: 'localhost', port: 5001, protocol: 'http'});
+const ipfs = new window.Ipfs({host: 'localhost', port: 5001, protocol: 'http'});
 
 //ChatGPT würde es so machen:
 /*

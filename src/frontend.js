@@ -3,6 +3,8 @@ const blockchain = {
     documents: [],
 };
 
+const ipfs = new window.Ipfs();
+
 function uploadDocument() {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
