@@ -1,13 +1,28 @@
 // Simples Beispiel für die Verwendung von JavaScript und einer Mock-Blockchain-Instanz
+import Ipfs from "./ipfs";
+import {address,abi} from "./notarstore";
+
+const web3 = new Web3(`https://sepolia.infura.io/v3/cd2a9cab98804fa6bda949e3db5b7005`);
+const contract = new web3.eth.contract(abi,address);
+
 const blockchain = {
     documents: [],
 };
 
-const ipfs = new window.Ipfs();
-
-function uploadDocument() {
+async function uploadDocument() {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
+
+    try{
+        const result = await Ipfs.add(file);
+        const ipfsHash = result.cid.toString();
+
+        console.log(`File added to IPFS with hash`, ipfsHash.toString());
+
+        contract.methods.store(ipfsHash).send();
+    } catch (error) {
+        console.error('Error adding file to IPFS:', error);
+    }
 
     // Simuliere das Generieren des Hashes
     const hash = generateHash(file.name + file.size + Date.now());

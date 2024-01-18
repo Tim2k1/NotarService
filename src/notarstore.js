@@ -1,5 +1,3 @@
-import web3 from './web3';
-
 const address = '0x4cc02532a492b0799fE3d92A5d150DE7C17f472F';
 
 const abi =
@@ -182,4 +180,4 @@ const abi =
 	]
 
 
-export default new web3.eth.Contract(abi, address);
+export {abi, address};

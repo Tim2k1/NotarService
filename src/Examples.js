@@ -1,6 +1,5 @@
 //File with Examples on how tu use methods from the backend and how to store Files in the IPFS
 
-import web3 from './web3';
 import ipfs from './ipfs';
 import notarstore from './notarstore';
 
