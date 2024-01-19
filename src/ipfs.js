@@ -13,4 +13,4 @@ const ipfs = IpfsApi.create({
   protocol: 'http',
 });
 
-export default ipfs;
+//export default ipfs;

@@ -180,4 +180,4 @@ const abi =
 	]
 
 
-export {abi, address};
+//export {abi, address};
