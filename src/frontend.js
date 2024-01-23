@@ -2,13 +2,18 @@
 //import Ipfs from "./ipfs";
 //import {address,abi} from "./notarstore";
 
+//web3 connection/Instance mit Infura, einfach Infura URL hinzufügen, alternativ mit Metamask verbinden
 const web3 = new Web3(`https://sepolia.infura.io/v3/cd2a9cab98804fa6bda949e3db5b7005`);
-const contract = new web3.eth.Contract(abi,address);
 
+//Verbindung zu unserem Smart Contract mit der erstellten web3 Instanz
+const contract = new web3.eth.Contract(abi,address);
+/*
 const blockchain = {
     documents: [],
 };
+ */
 
+//Ausgewähltes Dokument auf die Blockchain und in das IPFS laden
 async function uploadDocument() {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
@@ -56,6 +61,7 @@ function updateDocumentList() {
     const documentList = document.getElementById('documentList');
     documentList.innerHTML = '<h2>Übersicht der Dokumente</h2>';
 
+    //Methode aus Smart Contract returned alle Dokumente/CIDs die auf der Blockchain liegen
     contract.methods.getDocuments().call()
         .then(result => {
             //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen
@@ -95,6 +101,7 @@ function closePopup() {
 function findDocumentByHash(){
     const ipfsHash = document.getElementById('hashInput');
 
+    //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
     contract.methods.getDocumentbyHash(ipfsHash).call()
         .then(result => {
             //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen
