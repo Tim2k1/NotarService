@@ -3,7 +3,7 @@
 //import {address,abi} from "./notarstore";
 
 const web3 = new Web3(`https://sepolia.infura.io/v3/cd2a9cab98804fa6bda949e3db5b7005`);
-const contract = new web3.eth.contract(abi,address);
+const contract = new web3.eth.Contract(abi,address);
 
 const blockchain = {
     documents: [],
@@ -14,7 +14,8 @@ async function uploadDocument() {
     const file = fileInput.files[0];
 
     try{
-        const result = await Ipfs.add(file);
+
+        const result = await ipfs.add(file);
         const ipfsHash = result.cid.toString();
 
         console.log(`File added to IPFS with hash`, ipfsHash.toString());
