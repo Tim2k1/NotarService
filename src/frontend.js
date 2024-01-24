@@ -15,12 +15,15 @@ const contract = new web3.eth.Contract(abi,address);
 
 //using local Installation of IPFS waiting default on port 5001
 const ipfs = await Ipfs.create({
-    host: 'localhost',
-    port: 5001,
-    protocol: 'http'
+    host: '127.0.0.1',
+    port: 8080,
+    protocol: 'http',
 });
 
-await ipfs.add("C:\Users\crate\OneDrive\Dokumente\IPFS_Test.txt");
+/*
+const result = await ipfs.add("Test2");
+console.log("results", result.cid.toString());
+ */
 
 /*
 const blockchain = {
