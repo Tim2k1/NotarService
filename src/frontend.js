@@ -3,10 +3,25 @@
 //import {address,abi} from "./notarstore";
 
 //web3 connection/Instance mit Infura, einfach Infura URL hinzufügen, alternativ mit Metamask verbinden
-const web3 = new Web3(`https://sepolia.infura.io/v3/cd2a9cab98804fa6bda949e3db5b7005`);
+//const web3 = new Web3(`https://sepolia.infura.io/v3/cd2a9cab98804fa6bda949e3db5b7005`);
+
+//web3 mit Metamask
+
+const web3 = new Web3(window.ethereum);
+const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
 
 //Verbindung zu unserem Smart Contract mit der erstellten web3 Instanz
 const contract = new web3.eth.Contract(abi,address);
+
+//using local Installation of IPFS waiting default on port 5001
+const ipfs = await Ipfs.create({
+    host: 'localhost',
+    port: 5001,
+    protocol: 'http'
+});
+
+await ipfs.add("C:\Users\crate\OneDrive\Dokumente\IPFS_Test.txt");
+
 /*
 const blockchain = {
     documents: [],
@@ -26,7 +41,7 @@ async function uploadDocument() {
         console.log(`File added to IPFS with hash`, ipfsHash.toString());
 
         //Füge den generierten CID für das Dokument der Blockchain hinzu
-        contract.methods.store(ipfsHash).send();
+        contract.methods.store(ipfsHash).send({ from: accounts[0] });
 
         // Zeige den generierten Hash in einem Popup an
         showHashPopup(ipfsHash);

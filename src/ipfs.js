@@ -1,6 +1,11 @@
 //using local Installation of IPFS waiting default on port 5001
-const ipfs = async() => await Ipfs.create();
-
+/*
+const ipfs = await Ipfs.create({
+    host: '127.0.0.1',
+    port: 5001,
+    protocol: 'http'
+});
+ */
 //ChatGPT würde es so machen:
 
 /*
