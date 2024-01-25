@@ -1,25 +1,36 @@
-// Simples Beispiel für die Verwendung von JavaScript und einer Mock-Blockchain-Instanz
-//import Ipfs from "./ipfs";
-//import {address,abi} from "./notarstore";
-
-//web3 connection/Instance mit Infura, einfach Infura URL hinzufügen, alternativ mit Metamask verbinden
-//const web3 = new Web3(`https://sepolia.infura.io/v3/cd2a9cab98804fa6bda949e3db5b7005`);
-
-//web3 mit Metamask
-
+//Web3 Verbindung mit Metamask Erweiterung im Browser
 const web3 = new Web3(window.ethereum);
 const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
 
-//Verbindung zu unserem Smart Contract mit der erstellten web3 Instanz
+//Verbindung zu unserem Smart Contract mit der erstellten Web3 Instanz
 const contract = new web3.eth.Contract(abi,address);
 
-//Lokale IPFS Installation verwenden
+/*
+//Lokale IPFS Installation verwenden (funktioniert noch nicht wirklich)
 const ipfs = await Ipfs.create({
     host: '127.0.0.1',
     port: 8080,
     protocol: 'http',
 });
+ */
+
 //const ipfs = await Ipfs.create();
+
+const ipfsApiUrl = 'http://localhost:5001/api/v0/id';
+
+// Make a GET request to the IPFS API endpoint
+fetch(ipfsApiUrl)
+    .then(response => {
+        if (response.ok) {
+            console.log('Local IPFS node is running.');
+        } else {
+            console.error('Local IPFS node is not running or not accessible.');
+        }
+    })
+    .catch(error => {
+        console.error('Error checking local IPFS:', error);
+    });
+
 
 // Connection checker für unsere Web3 Verbindung
 web3.eth.net.isListening()
