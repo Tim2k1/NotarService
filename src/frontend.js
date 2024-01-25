@@ -13,17 +13,31 @@ const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
 //Verbindung zu unserem Smart Contract mit der erstellten web3 Instanz
 const contract = new web3.eth.Contract(abi,address);
 
-//using local Installation of IPFS waiting default on port 5001
+//Lokale IPFS Installation verwenden
 const ipfs = await Ipfs.create({
     host: '127.0.0.1',
     port: 8080,
     protocol: 'http',
 });
+//const ipfs = await Ipfs.create();
+
+// Connection checker für unsere Web3 Verbindung
+web3.eth.net.isListening()
+    .then(isConnected => {
+        if (isConnected) {
+            console.log('Connected to Ethereum node');
+        } else {
+            console.error('Not connected to Ethereum node');
+        }
+    })
+    .catch(error => {
+        console.error('Error checking connection:', error);
+    });
 
 /*
-const result = await ipfs.add("Test2");
+const result = await ipfs.add("Test");
 console.log("results", result.cid.toString());
- */
+*/
 
 /*
 const blockchain = {
@@ -44,7 +58,7 @@ async function uploadDocument() {
         console.log(`File added to IPFS with hash`, ipfsHash.toString());
 
         //Füge den generierten CID für das Dokument der Blockchain hinzu
-        contract.methods.store(ipfsHash).send({ from: accounts[0] });
+        contract.methods.store(ipfsHash,accounts[0]).send({ from: accounts[0] });
 
         // Zeige den generierten Hash in einem Popup an
         showHashPopup(ipfsHash);
