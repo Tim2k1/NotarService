@@ -3,11 +3,13 @@ pragma solidity >=0.8.2 <0.9.0;
 
 contract NotarStore{
 
+    string docName;
     string ipfsHash;
     address owner;
     uint256 storeDate;
 
     struct Document{
+        string docName;
         string ipfsHash;
         address owner;
         uint256 storeDate;
@@ -16,6 +18,7 @@ contract NotarStore{
     Document[] public documents;
 
     event StoreDocument(
+        string docName,
         string ipfsHash,
         address owner,
         uint256 storeDate
@@ -25,8 +28,6 @@ contract NotarStore{
     mapping (uint => address) internal documentOwner;
     // Map documents to hash
     mapping (uint => string) internal documentHash;
-    // stored Hashes
-    mapping(string => bool) Hashes;
 
     //only the owner can modify
     modifier onlyOwner() {
@@ -35,15 +36,14 @@ contract NotarStore{
     }
 
     //function for storing the Document on the Blockchain
-    function Store(string memory _documentHash, address _owner) public{
-        require(!Hashes[_documentHash], "File already stored");
+    function Store(string memory _documentName, string memory _documentHash, address _owner) public{
 
         uint _storeDate = block.timestamp;
-        documents.push(Document(_documentHash, _owner, _storeDate));
+        documents.push(Document(_documentName, _documentHash, _owner, _storeDate));
         uint id = documents.length - 1;
         documentOwner[id] = msg.sender;
         documentHash[id] = _documentHash;
-        emit StoreDocument(_documentHash, _owner, _storeDate);
+        emit StoreDocument(_documentName, _documentHash, _owner, _storeDate);
     }
 
     //Method for returning the total Number of Documents
@@ -65,7 +65,6 @@ contract NotarStore{
 
     // Method for returning a specific Document by a given Hash
     function getDocumentbyHash(string memory _documentHash) public view returns (Document memory){
-        //require(Hashes[_documentHash],"False Hash or Document does not exist");
 
         Document memory document;
         Document memory result;
@@ -78,13 +77,6 @@ contract NotarStore{
             }
         }
         return document;
-    }
-
-    //Method for getting the Information about a Document
-    function getDocumentData(string memory _documentHash) public view returns (address _owner, uint256 _storeDate){
-        Document memory document = getDocumentbyHash(_documentHash);
-
-        return(document.owner,document.storeDate);
     }
 
 }
