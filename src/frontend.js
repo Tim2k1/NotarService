@@ -5,32 +5,13 @@ const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
 //Verbindung zu unserem Smart Contract mit der erstellten Web3 Instanz
 const contract = new web3.eth.Contract(abi,address);
 
+//Lokale IPFS Installation verwenden
+const ipfs = window.KuboRpcClient.create({ host: 'localhost', port: 5001 })
+
 /*
-//Lokale IPFS Installation verwenden (funktioniert noch nicht wirklich)
-const ipfs = await Ipfs.create({
-    host: '127.0.0.1',
-    port: 8080,
-    protocol: 'http',
-});
- */
-
-//const ipfs = await Ipfs.create();
-
-const ipfsApiUrl = 'http://localhost:5001/api/v0/id';
-
-// Make a GET request to the IPFS API endpoint
-fetch(ipfsApiUrl)
-    .then(response => {
-        if (response.ok) {
-            console.log('Local IPFS node is running.');
-        } else {
-            console.error('Local IPFS node is not running or not accessible.');
-        }
-    })
-    .catch(error => {
-        console.error('Error checking local IPFS:', error);
-    });
-
+const result = await ipfs.add("TestandTest");
+console.log("results", result.cid.toString());
+*/
 
 // Connection checker für unsere Web3 Verbindung
 web3.eth.net.isListening()
