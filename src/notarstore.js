@@ -1,9 +1,15 @@
-const address = '0xab60504014c8ac0846595645590e7e0e7740cff2';
+const address = '0xa6b066a3aca77c0b0070ddcd41ae5506fd043485';
 
 const abi =[
 	{
 		"anonymous": false,
 		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "docName",
+				"type": "string"
+			},
 			{
 				"indexed": false,
 				"internalType": "string",
@@ -30,6 +36,11 @@ const abi =[
 		"inputs": [
 			{
 				"internalType": "string",
+				"name": "_documentName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
 				"name": "_documentHash",
 				"type": "string"
 			},
@@ -54,6 +65,11 @@ const abi =[
 		],
 		"name": "documents",
 		"outputs": [
+			{
+				"internalType": "string",
+				"name": "docName",
+				"type": "string"
+			},
 			{
 				"internalType": "string",
 				"name": "ipfsHash",
@@ -94,34 +110,15 @@ const abi =[
 				"type": "string"
 			}
 		],
-		"name": "getDocumentData",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "_owner",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_storeDate",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_documentHash",
-				"type": "string"
-			}
-		],
 		"name": "getDocumentbyHash",
 		"outputs": [
 			{
 				"components": [
+					{
+						"internalType": "string",
+						"name": "docName",
+						"type": "string"
+					},
 					{
 						"internalType": "string",
 						"name": "ipfsHash",
@@ -154,6 +151,11 @@ const abi =[
 				"components": [
 					{
 						"internalType": "string",
+						"name": "docName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
 						"name": "ipfsHash",
 						"type": "string"
 					},
@@ -177,6 +179,3 @@ const abi =[
 		"type": "function"
 	}
 ]
-
-
-//export {abi, address};

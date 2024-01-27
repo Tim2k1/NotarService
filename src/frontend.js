@@ -52,7 +52,7 @@ async function uploadDocument() {
         console.log(`File added to IPFS with hash`, ipfsHash);
 
         //Füge den generierten CID für das Dokument der Blockchain hinzu
-        contract.methods.Store(ipfsHash,accounts[0]).send({ from: accounts[0] });
+        contract.methods.Store(file.name,ipfsHash,accounts[0]).send({ from: accounts[0] });
 
         // Zeige den generierten Hash in einem Popup an
         //showHashPopup(ipfsHash);
@@ -94,9 +94,9 @@ function updateDocumentList() {
             const documentArray = result;
 
             //Erstelle für alle Dokumente eine Ansicht auf der Übersichtsliste
-            documentArray.forEach((document) => {
+            documentArray.forEach((doc) => {
                 const listItem = document.createElement('p');
-                listItem.textContent = `Dokument: ${document.owner}, Hash: ${document.ipfsHash}, Zeitstempel: ${document.storeDate}`;
+                listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${doc.storeDate}`;
                 documentList.appendChild(listItem);
             });
         })
@@ -135,13 +135,34 @@ function findDocumentByHash(){
             const document1 = result;
             const documentContent = document.getElementById("documentContent");
             const listItem = document.createElement('p');
-            listItem.textContent = `Hash: ${document1.ipfsHash}, Zeitstempel: ${document1.storeDate}`;
+            listItem.textContent = `Dokument: ${document1.docName}, Hash: ${document1.ipfsHash}, Zeitstempel: ${document1.storeDate}`;
             documentContent.appendChild(listItem);
         });
 }
 
-//TODO Löschen von Dokument
+async function deleteDocument(hash){
+    try {
+        // Delete the file by CID
+        await ipfs.files.rm(hash);
 
-//TODO Download von Dokument
+        console.log('File deleted from IPFS successfully.');
+    } catch (error) {
+        console.error('Error deleting file from IPFS:', error);
+    }
+}
+
+async function getDocumentFromIPFS(hash) {
+    try {
+        // Get the document content by CID
+        const content = await ipfs.cat(hash);
+
+        // Convert the content to a string (assuming it's text-based)
+        const documentText = content.toString();
+
+        console.log('Document Content:', documentText);
+    } catch (error) {
+        console.error('Error getting document from IPFS:', error);
+    }
+}
 
 
