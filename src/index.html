@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- Eigene CSS-Datei einbinden -->
     <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="notarstore.js"></script>
+    <script src="ipfs.js"></script>
+    <script type="module" src="frontend.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@4.4.0/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kubo-rpc-client/dist/index.min.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -42,7 +50,7 @@
                 <input type="file" class="custom-file-input" id="fileInput" accept=".pdf, .doc, .docx">
                 <label class="custom-file-label" for="fileInput">Dokument auswählen</label>
             </div>
-            <button type="button" class="btn btn-primary mt-2" onclick="uploadDocument()">Dokument hochladen</button>
+            <button type="button" class="btn btn-primary mt-2" id="uploadButton">Dokument hochladen</button>
         </form>
 
         <!-- Anzeige für hochgeladene Dokumente -->
@@ -55,19 +63,16 @@
         <div class="mt-4">
             <label for="hashInput">Dokument nach Hash suchen:</label>
             <input type="text" id="hashInput" class="form-control">
-            <button type="button" class="btn btn-info mt-2" onclick="findDocumentByHash()">Dokument finden</button>
+            <button type="button" class="btn btn-info mt-2" id="findDocButton">Dokument finden</button>
+
+            <p id="documentContent">
+
+            </p>
         </div>
     </div>
 
     <!-- Bootstrap JS, Web3 JS, IPFS JS und eigene JS-Dateien einbinden -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="notarstore.js"></script>
-    <script src="ipfs.js"></script>
-    <script type="module" src="frontend.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/web3@4.4.0/dist/web3.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/kubo-rpc-client/dist/index.min.js"></script>
+
 
 </body>
 </html>

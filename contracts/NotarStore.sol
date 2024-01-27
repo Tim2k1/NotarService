@@ -65,7 +65,7 @@ contract NotarStore{
 
     // Method for returning a specific Document by a given Hash
     function getDocumentbyHash(string memory _documentHash) public view returns (Document memory){
-        require(Hashes[_documentHash],"False Hash or Document does not exist");
+        //require(Hashes[_documentHash],"False Hash or Document does not exist");
 
         Document memory document;
         Document memory result;

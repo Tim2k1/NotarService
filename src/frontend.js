@@ -37,6 +37,8 @@ const blockchain = {
 };
  */
 
+document.getElementById("uploadButton").addEventListener("click", uploadDocument);
+
 //Ausgewähltes Dokument auf die Blockchain und in das IPFS laden
 async function uploadDocument() {
     const fileInput = document.getElementById('fileInput');
@@ -47,13 +49,13 @@ async function uploadDocument() {
         const result = await ipfs.add(file);
         const ipfsHash = result.cid.toString();
 
-        console.log(`File added to IPFS with hash`, ipfsHash.toString());
+        console.log(`File added to IPFS with hash`, ipfsHash);
 
         //Füge den generierten CID für das Dokument der Blockchain hinzu
-        contract.methods.store(ipfsHash,accounts[0]).send({ from: accounts[0] });
+        contract.methods.Store(ipfsHash,accounts[0]).send({ from: accounts[0] });
 
         // Zeige den generierten Hash in einem Popup an
-        showHashPopup(ipfsHash);
+        //showHashPopup(ipfsHash);
 
         // Aktualisiere die Übersicht der Dokumente
         updateDocumentList();
@@ -94,7 +96,7 @@ function updateDocumentList() {
             //Erstelle für alle Dokumente eine Ansicht auf der Übersichtsliste
             documentArray.forEach((document) => {
                 const listItem = document.createElement('p');
-                listItem.textContent = `Dokument: ${document.name}, Hash: ${document.ipfsHash}, Zeitstempel: ${document.storeDate}`;
+                listItem.textContent = `Dokument: ${document.owner}, Hash: ${document.ipfsHash}, Zeitstempel: ${document.storeDate}`;
                 documentList.appendChild(listItem);
             });
         })
@@ -121,16 +123,20 @@ function closePopup() {
     const hashPopup = document.getElementById('hashPopup');
     hashPopup.style.display = 'none';
 }
+document.getElementById("findDocButton").addEventListener("click", findDocumentByHash);
 
 function findDocumentByHash(){
-    const ipfsHash = document.getElementById('hashInput');
+    const ipfsHash = document.getElementById('hashInput').toString();
 
     //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
     contract.methods.getDocumentbyHash(ipfsHash).call()
         .then(result => {
             //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen
-            const document = result;
-            //TODO Dokument als Ergebnis anzeigen
+            const document1 = result;
+            const documentContent = document.getElementById("documentContent");
+            const listItem = document.createElement('p');
+            listItem.textContent = `Hash: ${document1.ipfsHash}, Zeitstempel: ${document1.storeDate}`;
+            documentContent.appendChild(listItem);
         });
 }
 
