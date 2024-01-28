@@ -22,3 +22,9 @@ body {
 .modal-dialog {
     max-width: 400px;
 }
+
+/* Anpassung für Dokumentanzeige */
+.doc {
+    border: 2px solid #000; /* Set border properties as needed */
+    padding: 10px; /* Optional: Add padding to create space between text and border */
+}

@@ -95,9 +95,12 @@ function updateDocumentList() {
 
             //Erstelle für alle Dokumente eine Ansicht auf der Übersichtsliste
             documentArray.forEach((doc) => {
-                const listItem = document.createElement('p');
-                listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${doc.storeDate}`;
-                documentList.appendChild(listItem);
+                if (doc.owner = accounts[0]) {
+                    const listItem = document.createElement('p');
+                    listItem.className = 'doc';
+                    listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${doc.storeDate}`;
+                    documentList.appendChild(listItem);
+                }
             });
         })
 
@@ -132,10 +135,11 @@ function findDocumentByHash(){
     contract.methods.getDocumentbyHash(ipfsHash).call()
         .then(result => {
             //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen
-            const document1 = result;
+            const doc = result;
             const documentContent = document.getElementById("documentContent");
             const listItem = document.createElement('p');
-            listItem.textContent = `Dokument: ${document1.docName}, Hash: ${document1.ipfsHash}, Zeitstempel: ${document1.storeDate}`;
+            listItem.className = 'doc';
+            listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${doc.storeDate}`;
             documentContent.appendChild(listItem);
         });
 }
