@@ -103,15 +103,6 @@ function updateDocumentList() {
                 }
             });
         })
-
-    /*
-    blockchain.documents.forEach((document) => {
-        const listItem = document.createElement('p');
-        listItem.textContent = `Dokument: ${document.name}, Hash: ${document.hash}, Zeitstempel: ${document.timestamp}`;
-        documentList.appendChild(listItem);
-    });
-    */
-
 }
 
 function showHashPopup(hash) {
@@ -134,7 +125,7 @@ function findDocumentByHash(){
     //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
     contract.methods.getDocumentbyHash(ipfsHash).call()
         .then(result => {
-            //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen
+            //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen und erstellt Ansicht für Dokument
             const doc = result;
             const documentContent = document.getElementById("documentContent");
             const listItem = document.createElement('p');
@@ -146,10 +137,14 @@ function findDocumentByHash(){
 
 async function deleteDocument(hash){
     try {
-        // Delete the file by CID
-        await ipfs.files.rm(hash);
+        // File mit CID löschen
+        await ipfs.files.rm('/ipfs/${hash}');
 
         console.log('File deleted from IPFS successfully.');
+
+        //Starte Garbage Collection
+        await ipfs.repo.gc();
+
     } catch (error) {
         console.error('Error deleting file from IPFS:', error);
     }
@@ -157,7 +152,7 @@ async function deleteDocument(hash){
 
 async function getDocumentFromIPFS(hash) {
     try {
-        // Get the document content by CID
+        // File von IPFS holen mit CID
         const content = await ipfs.cat(hash);
 
         // Convert the content to a string (assuming it's text-based)
