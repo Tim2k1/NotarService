@@ -154,7 +154,7 @@ async function concatenateAsyncIterable(asyncIterable) {
 async function getDocumentContentFromIPFS(hash) {
     try {
         // File von IPFS holen mit CID
-        const content = await ipfs.cat(hash);
+        const content = await ipfs.cat(`/${hash}`);
 
         const asyncIterable = content;
 
