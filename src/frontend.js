@@ -8,11 +8,6 @@ const contract = new web3.eth.Contract(abi,address);
 //Lokale IPFS Installation verwenden
 const ipfs = window.KuboRpcClient.create({ host: 'localhost', port: 5001 })
 
-/*
-const result = await ipfs.add("TestandTest");
-console.log("results", result.cid.toString());
-*/
-
 // Connection checker für unsere Web3 Verbindung
 web3.eth.net.isListening()
     .then(isConnected => {
@@ -25,11 +20,6 @@ web3.eth.net.isListening()
     .catch(error => {
         console.error('Error checking connection:', error);
     });
-
-/*
-const result = await ipfs.add("Test");
-console.log("results", result.cid.toString());
-*/
 
 /*
 const blockchain = {
@@ -73,13 +63,6 @@ async function uploadDocument() {
         hash: hash,
         timestamp: new Date().toLocaleString(),
     });
-
-
-    // Zeige den generierten Hash in einem Popup an
-    showHashPopup(hash);
-
-    // Aktualisiere die Übersicht der Dokumente
-    updateDocumentList();
      */
 }
 
@@ -97,8 +80,12 @@ function updateDocumentList() {
             documentArray.forEach((doc) => {
                 if (doc.owner = accounts[0]) {
                     const listItem = document.createElement('p');
+                    // Timestamp Konvertierung zu verständlichem Datum
+                    const timeStamp = Number(doc.storeDate);
+                    const date = new Date(timeStamp * 1000);
+                    const readableDate = date.toLocaleString();
                     listItem.className = 'doc';
-                    listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${doc.storeDate}`;
+                    listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${readableDate}`;
                     documentList.appendChild(listItem);
                 }
             });
@@ -138,27 +125,45 @@ function findDocumentByHash(){
 async function deleteDocument(hash){
     try {
         // File mit CID löschen
-        await ipfs.files.rm('/ipfs/${hash}');
+        await ipfs.files.rm(`/${hash}`);
+        await ipfs.pin.rm(`/${hash}`);
 
         console.log('File deleted from IPFS successfully.');
 
-        //Starte Garbage Collection
+        //Starte Garbage Collector
         await ipfs.repo.gc();
 
     } catch (error) {
         console.error('Error deleting file from IPFS:', error);
     }
 }
+// Funktion zum generieren eines Uint8Arrays von einem AsyncIterable
+async function concatenateAsyncIterable(asyncIterable) {
+    let result = new Uint8Array();
 
-async function getDocumentFromIPFS(hash) {
+    // Iterate over the AsyncIterable
+    for await (const uint8Array of asyncIterable) {
+        // Concatenate Uint8Arrays
+        result = new Uint8Array([...result, ...uint8Array]);
+    }
+
+    return result;
+}
+
+//File Content von Ipfs
+async function getDocumentContentFromIPFS(hash) {
     try {
         // File von IPFS holen mit CID
         const content = await ipfs.cat(hash);
 
-        // Convert the content to a string (assuming it's text-based)
-        const documentText = content.toString();
+        const asyncIterable = content;
 
-        console.log('Document Content:', documentText);
+        const concatenatedUint8Array = await concatenateAsyncIterable(asyncIterable);
+
+        // Convert Uint8Array to string for demonstration
+        const resultString = new TextDecoder().decode(concatenatedUint8Array);
+
+        console.log('Document Content:', resultString);
     } catch (error) {
         console.error('Error getting document from IPFS:', error);
     }
