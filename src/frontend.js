@@ -21,12 +21,6 @@ web3.eth.net.isListening()
         console.error('Error checking connection:', error);
     });
 
-/*
-const blockchain = {
-    documents: [],
-};
- */
-
 document.getElementById("uploadButton").addEventListener("click", uploadDocument);
 
 //Ausgewähltes Dokument auf die Blockchain und in das IPFS laden
@@ -53,17 +47,6 @@ async function uploadDocument() {
     } catch (error) {
         console.error('Error adding file to IPFS:', error);
     }
-    /*
-    // Simuliere das Generieren des Hashes
-    const hash = generateHash(file.name + file.size + Date.now());
-
-    // Füge das Dokument zur Blockchain hinzu
-    blockchain.documents.push({
-        name: file.name,
-        hash: hash,
-        timestamp: new Date().toLocaleString(),
-    });
-     */
 }
 
 function updateDocumentList() {
