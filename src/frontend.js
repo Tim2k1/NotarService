@@ -116,8 +116,11 @@ function findDocumentByHash(){
             const doc = result;
             const documentContent = document.getElementById("documentContent");
             const listItem = document.createElement('p');
+            const timeStamp = Number(doc.storeDate);
+            const date = new Date(timeStamp * 1000);
+            const readableDate = date.toLocaleString();
             listItem.className = 'doc';
-            listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${doc.storeDate}`;
+            listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${readableDate}`;
             documentContent.appendChild(listItem);
         });
 }
@@ -163,10 +166,33 @@ async function getDocumentContentFromIPFS(hash) {
         // Convert Uint8Array to string for demonstration
         const resultString = new TextDecoder().decode(concatenatedUint8Array);
 
-        console.log('Document Content:', resultString);
+        return resultString;
     } catch (error) {
         console.error('Error getting document from IPFS:', error);
     }
 }
 
+async function downloadFile(hash) {
+    //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
+    contract.methods.getDocumentbyHash(hash).call()
+        .then(async result => {
+            //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen und erstellt Ansicht für Dokument
+            const doc = result;
 
+            const fileName = doc.docName;
+            const fileContent = await getDocumentContentFromIPFS(hash);
+
+            //Blob für Dokument Inhalt
+            const blob = new Blob([fileContent]);
+
+            // Downloadlink für Dokument
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = fileName;
+
+            // Link auf der Seite generieren, klicken und wieder löschen
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        });
+}
