@@ -11,6 +11,12 @@
 					{
 						"indexed": false,
 						"internalType": "string",
+						"name": "docName",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
 						"name": "ipfsHash",
 						"type": "string"
 					},
@@ -32,6 +38,11 @@
 			},
 			{
 				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_documentName",
+						"type": "string"
+					},
 					{
 						"internalType": "string",
 						"name": "_documentHash",
@@ -58,6 +69,11 @@
 				],
 				"name": "documents",
 				"outputs": [
+					{
+						"internalType": "string",
+						"name": "docName",
+						"type": "string"
+					},
 					{
 						"internalType": "string",
 						"name": "ipfsHash",
@@ -98,34 +114,15 @@
 						"type": "string"
 					}
 				],
-				"name": "getDocumentData",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "_owner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_storeDate",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "string",
-						"name": "_documentHash",
-						"type": "string"
-					}
-				],
 				"name": "getDocumentbyHash",
 				"outputs": [
 					{
 						"components": [
+							{
+								"internalType": "string",
+								"name": "docName",
+								"type": "string"
+							},
 							{
 								"internalType": "string",
 								"name": "ipfsHash",
@@ -156,6 +153,11 @@
 				"outputs": [
 					{
 						"components": [
+							{
+								"internalType": "string",
+								"name": "docName",
+								"type": "string"
+							},
 							{
 								"internalType": "string",
 								"name": "ipfsHash",
@@ -209,11 +211,11 @@
 	},
 	"sources": {
 		"contracts/NotarStore.sol": {
-			"keccak256": "0x185a0916de1505ab33859fb78c2c1492d39d1c669828441d4540066785600a83",
+			"keccak256": "0x9d54f3d7e2916b7831e75bc4c0ff41fef50fbc12e806c9c12b76408c8a73bd01",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://a8d143d16245b2f37608c201726b37d3631819315a1e1e5347715f3a6ef02f8f",
-				"dweb:/ipfs/Qmetxh6faJxZdfqAnsbLW6nhnSZ3Y8mBwbK7Qk83nsn1YN"
+				"bzz-raw://67582bc701e91449048a05f30b7768a552e59fc66b619801eded3a94dd092e4a",
+				"dweb:/ipfs/QmY2wM2N52aLQsqipDpeTwHp6gG88JjPYMHcinMoC2m6wY"
 			]
 		}
 	},
