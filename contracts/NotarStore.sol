@@ -76,7 +76,7 @@ contract NotarStore{
                 result = document;
             }
         }
-        return document;
+        return result;
     }
 
 }
