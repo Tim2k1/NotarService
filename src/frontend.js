@@ -21,6 +21,7 @@ web3.eth.net.isListening()
         console.error('Error checking connection:', error);
     });
 
+//Upload Button
 document.getElementById("uploadButton").addEventListener("click", uploadDocument);
 
 //Ausgewähltes Dokument auf die Blockchain und in das IPFS laden
@@ -29,26 +30,45 @@ async function uploadDocument() {
     const file = fileInput.files[0];
 
     try{
-
+        //Dokument dem IPFS hinzufügen
         const result = await ipfs.add(file);
         const ipfsHash = result.cid.toString();
 
         console.log(`File added to IPFS with hash`, ipfsHash);
 
-        //Füge den generierten CID für das Dokument der Blockchain hinzu
-        contract.methods.Store(file.name,ipfsHash,accounts[0]).send({ from: accounts[0] });
+        // Prüfen, ob Dokument bereits vorhanden
+        const documentAdd = await documentNotAdded(ipfsHash);
 
-        // Zeige den generierten Hash in einem Popup an
-        //showHashPopup(ipfsHash);
+        if( documentAdd === true){
 
-        // Aktualisiere die Übersicht der Dokumente
-        updateDocumentList();
+            //Füge den generierten CID für das Dokument der Blockchain hinzu
+            contract.methods.Store(file.name,ipfsHash,accounts[0]).send({ from: accounts[0] });
+
+            // Zeige den generierten Hash in einem Popup an
+            //showHashPopup(ipfsHash);
+
+            // Aktualisiere die Übersicht der Dokumente
+            updateDocumentList();
+        } else{
+            console.log('File already added.')
+        }
 
     } catch (error) {
         console.error('Error adding file to IPFS:', error);
     }
 }
 
+//Prüfen, ob das Dokument bereits hinzugefügt worden ist
+async function documentNotAdded(hash) {
+
+    const bool = await contract.methods.getDocumentbyHash(hash).call().then((doc) => {
+        return doc.docName === '';
+    });
+
+    return bool;
+}
+
+//Dokumentenansicht generieren und updaten
 function updateDocumentList() {
     const documentList = document.getElementById('documentList');
     documentList.innerHTML = '<h2>Übersicht der Dokumente</h2>';
@@ -75,6 +95,7 @@ function updateDocumentList() {
         })
 }
 
+//Pop-up mit Hash anzeigen
 function showHashPopup(hash) {
     const hashPopup = document.getElementById('hashPopup');
     const hashValue = document.getElementById('hashValue');
@@ -83,6 +104,7 @@ function showHashPopup(hash) {
     hashPopup.style.display = 'block';
 }
 
+//Pop-up schließen
 function closePopup() {
     const hashPopup = document.getElementById('hashPopup');
     hashPopup.style.display = 'none';
@@ -90,6 +112,7 @@ function closePopup() {
 document.getElementById("findDocButton").addEventListener("click", findDocumentByHash);
 
 function findDocumentByHash(){
+    //Hash aus Eingabe holen
     const ipfsHash = document.getElementById('hashInput').toString();
 
     //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
@@ -97,17 +120,23 @@ function findDocumentByHash(){
         .then(result => {
             //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen und erstellt Ansicht für Dokument
             const doc = result;
-            const documentContent = document.getElementById("documentContent");
-            const listItem = document.createElement('p');
-            const timeStamp = Number(doc.storeDate);
-            const date = new Date(timeStamp * 1000);
-            const readableDate = date.toLocaleString();
-            listItem.className = 'doc';
-            listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${readableDate}`;
-            documentContent.appendChild(listItem);
+            //Ansicht nur erstellen wenn es einen passenden Hash gibt
+            if(doc.docName !== ''){
+                const documentContent = document.getElementById("documentContent");
+                const listItem = document.createElement('p');
+                //Timestamp leserlich machen
+                const timeStamp = Number(doc.storeDate);
+                const date = new Date(timeStamp * 1000);
+                const readableDate = date.toLocaleString();
+
+                listItem.className = 'doc';
+                listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${readableDate}`;
+                documentContent.appendChild(listItem);
+            }
         });
 }
 
+//Funktion zum Löschen eines Dokuments vom IPFS
 async function deleteDocument(hash){
     try {
         // File mit CID löschen
@@ -123,7 +152,7 @@ async function deleteDocument(hash){
         console.error('Error deleting file from IPFS:', error);
     }
 }
-// Funktion zum generieren eines Uint8Arrays von einem AsyncIterable
+// Funktion zum Generieren eines Uint8Arrays von einem AsyncIterable
 async function concatenateAsyncIterable(asyncIterable) {
     let result = new Uint8Array();
 
@@ -155,6 +184,7 @@ async function getDocumentContentFromIPFS(hash) {
     }
 }
 
+// Funktion zum Download eines Dokuments
 async function downloadFile(hash) {
     //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
     contract.methods.getDocumentbyHash(hash).call()
@@ -179,3 +209,6 @@ async function downloadFile(hash) {
             document.body.removeChild(downloadLink);
         });
 }
+
+// Aktualisiere die Übersicht der Dokumente
+updateDocumentList();
