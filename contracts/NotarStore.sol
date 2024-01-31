@@ -47,7 +47,7 @@ contract NotarStore{
     }
 
     //Method for returning the total Number of Documents
-    function getCount() public view returns(uint) {
+    function getCount() public onlyOwner view returns(uint) {
      return documents.length;
     }
 
