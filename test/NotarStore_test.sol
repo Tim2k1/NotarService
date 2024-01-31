@@ -14,36 +14,63 @@ import "../contracts/NotarStore.sol";
 // File name has to end with '_test.sol', this file can contain more than one testSuite contracts
 contract testSuite {
 
-    /// 'beforeAll' runs before all other tests
-    /// More special functions are: 'beforeEach', 'beforeAll', 'afterEach' & 'afterAll'
+    NotarStore notarTest;
+
     function beforeAll() public {
-        // <instantiate contract>
-        Assert.equal(uint(1), uint(1), "1 should be equal to 1");
+        notarTest = new NotarStore();
     }
 
-    function checkSuccess() public {
-        // Use 'Assert' methods: https://remix-ide.readthedocs.io/en/latest/assert_library.html
-        Assert.ok(2 == 2, 'should be true');
-        Assert.greaterThan(uint(2), uint(1), "2 should be greater than to 1");
-        Assert.lesserThan(uint(2), uint(3), "2 should be lesser than to 3");
+    // Test the Store function
+    function testStore() public {
+         // Parameters for the Store function
+        string memory documentName = "Test";
+        string memory documentHash = "Qmzhff23";
+        address owner = address(this);
+
+        // Call the Store function
+        notarTest.Store(documentName, documentHash, owner);
+
+        // Get the stored document details
+        (string memory storedDocumentName, string memory storedDocumentHash, address storedOwner, uint storedDate) = notarTest.documents(0);
+
+        // Check if the stored document details match the expected values
+        Assert.equal(storedDocumentName, documentName, "Stored document name does not match");
+        Assert.equal(storedDocumentHash, documentHash, "Stored document hash does not match");
+        Assert.equal(storedOwner, owner, "Stored document owner does not match");
+        Assert.equal(storedDate, block.timestamp, "Stored date does not match");
     }
 
-    function checkSuccess2() public pure returns (bool) {
-        // Use the return value (true or false) to test the contract
-        return true;
-    }
-    
-    function checkFailure() public {
-        Assert.notEqual(uint(1), uint(1), "1 should not be equal to 1");
+    // Test the getDocuments function
+    function testGetDocuments() public {
+        // Add some documents
+        notarTest.Store("Document1", "Hash1", address(this));
+        notarTest.Store("Document2", "Hash2", address(this));
+        notarTest.Store("Document3", "Hash3", address(this));
+
+        // Call the getDocuments function
+        NotarStore.Document[] memory documentArray = notarTest.getDocuments();
+
+        // Check if the returned documentArray length is correct
+        Assert.equal(documentArray.length, 4, "Returned documentArray length should be 3");
+
+        // Check if the returned document details are correct
+        Assert.equal(documentArray[1].docName, "Document1", "Document1 name does not match");
+        Assert.equal(documentArray[2].docName, "Document2", "Document2 name does not match");
+        Assert.equal(documentArray[3].docName, "Document3", "Document3 name does not match");
     }
 
-    /// Custom Transaction Context: https://remix-ide.readthedocs.io/en/latest/unittesting.html#customization
-    /// #sender: account-1
-    /// #value: 100
-    function checkSenderAndValue() public payable {
-        // account index varies 0-9, value is in wei
-        Assert.equal(msg.sender, TestsAccounts.getAccount(1), "Invalid sender");
-        Assert.equal(msg.value, 100, "Invalid value");
+    // Test the getDocumentbyHash function
+    function testGetDocumentbyHash() public {
+
+        // Call the getDocumentbyHash function
+        string memory targetDocumentHash = "Hash2";
+        NotarStore.Document memory foundDocument = notarTest.getDocumentbyHash(targetDocumentHash);
+
+        // Check if the returned document details are correct
+        Assert.equal(foundDocument.docName, "Document2", "Document name does not match");
+        Assert.equal(foundDocument.ipfsHash, "Hash2", "Document hash does not match");
+        Assert.equal(foundDocument.owner, address(this), "Document owner does not match");
     }
+
 }
     
