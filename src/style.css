@@ -28,3 +28,12 @@ body {
     border: 2px solid #000; /* Set border properties as needed */
     padding: 10px; /* Optional: Add padding to create space between text and border */
 }
+
+/* Anpassung für Buttons */
+.buttons-container {
+    display: flex;
+}
+
+.buttons-container button {
+    margin-left: 10px;
+}

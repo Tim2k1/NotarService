@@ -81,14 +81,38 @@ function updateDocumentList() {
 
             //Erstelle für alle Dokumente eine Ansicht auf der Übersichtsliste
             documentArray.forEach((doc) => {
-                if (doc.owner = accounts[0]) {
-                    const listItem = document.createElement('p');
+                if (doc.owner.toLowerCase() === accounts[0]) {
+                    // Entsprechende Stelle für Ansicht holen
+                    const listItem = document.createElement('div');
+                    listItem.className = 'doc';
+
+                    // Container für Buttons
+                    const buttonsContainer = document.createElement('div');
+                    buttonsContainer.className = 'buttons-container';
+
+                    //Delete Button
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.addEventListener('click', () => deleteDocument(listItem,doc.ipfsHash));
+                    buttonsContainer.appendChild(deleteButton);
+
+                    //Download Button
+                    const downloadButton = document.createElement('button');
+                    downloadButton.textContent = 'Download';
+                    downloadButton.addEventListener('click', () => downloadFile(doc.ipfsHash));
+                    buttonsContainer.appendChild(downloadButton);
+
                     // Timestamp Konvertierung zu verständlichem Datum
                     const timeStamp = Number(doc.storeDate);
                     const date = new Date(timeStamp * 1000);
                     const readableDate = date.toLocaleString();
-                    listItem.className = 'doc';
+
+                    //Dokumentdaten anzeigen
                     listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${readableDate}`;
+
+                    //Buttons zur Ansicht hinzufügen
+                    listItem.appendChild(buttonsContainer);
+
                     documentList.appendChild(listItem);
                 }
             });
@@ -109,35 +133,62 @@ function closePopup() {
     const hashPopup = document.getElementById('hashPopup');
     hashPopup.style.display = 'none';
 }
+
 document.getElementById("findDocButton").addEventListener("click", findDocumentByHash);
 
 function findDocumentByHash(){
     //Hash aus Eingabe holen
-    const ipfsHash = document.getElementById('hashInput').toString();
+    const ipfsHash = document.getElementById('hashInput').value;
 
     //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
     contract.methods.getDocumentbyHash(ipfsHash).call()
         .then(result => {
             //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen und erstellt Ansicht für Dokument
             const doc = result;
-            //Ansicht nur erstellen wenn es einen passenden Hash gibt
+
+            //Ansicht nur Erstellen, wenn es einen passenden Hash gibt
             if(doc.docName !== ''){
+                // Entsprechende Stelle für Ansicht holen
                 const documentContent = document.getElementById("documentContent");
-                const listItem = document.createElement('p');
-                //Timestamp leserlich machen
+
+                // Entsprechende Stelle für Ansicht erstellen
+                const listItem = document.createElement('div');
+                listItem.className = 'doc';
+
+                // Container für Buttons
+                const buttonsContainer = document.createElement('div');
+                buttonsContainer.className = 'buttons-container';
+
+                //Delete Button
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', () => deleteDocument(listItem,doc.ipfsHash));
+                buttonsContainer.appendChild(deleteButton);
+
+                //Download Button
+                const downloadButton = document.createElement('button');
+                downloadButton.textContent = 'Download';
+                downloadButton.addEventListener('click', () => downloadFile(doc.ipfsHash));
+                buttonsContainer.appendChild(downloadButton);
+
+                // Timestamp Konvertierung zu verständlichem Datum
                 const timeStamp = Number(doc.storeDate);
                 const date = new Date(timeStamp * 1000);
                 const readableDate = date.toLocaleString();
 
-                listItem.className = 'doc';
+                //Dokumentdaten anzeigen
                 listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${readableDate}`;
+
+                //Buttons zur Ansicht hinzufügen
+                listItem.appendChild(buttonsContainer);
+
                 documentContent.appendChild(listItem);
             }
         });
 }
 
 //Funktion zum Löschen eines Dokuments vom IPFS
-async function deleteDocument(hash){
+async function deleteDocument(paragraph,hash){
     try {
         // File mit CID löschen
         await ipfs.files.rm(`/${hash}`);
@@ -147,6 +198,9 @@ async function deleteDocument(hash){
 
         //Starte Garbage Collector
         await ipfs.repo.gc();
+
+        //Dokument aus Ansicht löschen
+        paragraph.remove();
 
     } catch (error) {
         console.error('Error deleting file from IPFS:', error);
