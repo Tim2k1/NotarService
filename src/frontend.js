@@ -95,12 +95,14 @@ function updateDocumentList() {
                     deleteButton.textContent = 'Delete';
                     deleteButton.addEventListener('click', () => deleteDocument(listItem,doc.ipfsHash));
                     buttonsContainer.appendChild(deleteButton);
+                    deleteButton.classList.add("btn btn-primary mt-2");
 
                     //Download Button
                     const downloadButton = document.createElement('button');
                     downloadButton.textContent = 'Download';
                     downloadButton.addEventListener('click', () => downloadFile(doc.ipfsHash));
                     buttonsContainer.appendChild(downloadButton);
+                    downloadButton.classList.add("btn btn-primary mt-2");
 
                     // Timestamp Konvertierung zu verständlichem Datum
                     const timeStamp = Number(doc.storeDate);
