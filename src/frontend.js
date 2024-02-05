@@ -6,7 +6,7 @@ const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
 const contract = new web3.eth.Contract(abi,address);
 
 //Lokale IPFS Installation verwenden
-const ipfs = window.KuboRpcClient.create({ host: 'localhost', port: 5001 })
+const ipfs = window.KuboRpcClient.create({ host: 'localhost', port: 5001 });
 
 // Connection checker für unsere Web3 Verbindung
 web3.eth.net.isListening()
@@ -95,14 +95,16 @@ function updateDocumentList() {
                     deleteButton.textContent = 'Delete';
                     deleteButton.addEventListener('click', () => deleteDocument(listItem,doc.ipfsHash));
                     buttonsContainer.appendChild(deleteButton);
-                    deleteButton.classList.add("btn btn-primary mt-2");
+                    //deleteButton.classList.add("btn btn-primary mt-2");
+                    deleteButton.className = "btn btn-primary mt-2";
 
                     //Download Button
                     const downloadButton = document.createElement('button');
                     downloadButton.textContent = 'Download';
                     downloadButton.addEventListener('click', () => downloadFile(doc.ipfsHash));
                     buttonsContainer.appendChild(downloadButton);
-                    downloadButton.classList.add("btn btn-primary mt-2");
+                    //downloadButton.classList.add("btn btn-primary mt-2");
+                    downloadButton.className = "btn btn-primary mt-2";
 
                     // Timestamp Konvertierung zu verständlichem Datum
                     const timeStamp = Number(doc.storeDate);
@@ -110,7 +112,7 @@ function updateDocumentList() {
                     const readableDate = date.toLocaleString();
 
                     //Dokumentdaten anzeigen
-                    listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${readableDate}`;
+                    listItem.innerHTML = `Dokument: ${doc.docName} <br> Hash: ${doc.ipfsHash} <br> Zeitstempel: ${readableDate}`;
 
                     //Buttons zur Ansicht hinzufügen
                     listItem.appendChild(buttonsContainer);
@@ -166,12 +168,14 @@ function findDocumentByHash(){
                 deleteButton.textContent = 'Delete';
                 deleteButton.addEventListener('click', () => deleteDocument(listItem,doc.ipfsHash));
                 buttonsContainer.appendChild(deleteButton);
+                deleteButton.className = "btn btn-primary mt-2";
 
                 //Download Button
                 const downloadButton = document.createElement('button');
                 downloadButton.textContent = 'Download';
                 downloadButton.addEventListener('click', () => downloadFile(doc.ipfsHash));
                 buttonsContainer.appendChild(downloadButton);
+                downloadButton.className = "btn btn-primary mt-2";
 
                 // Timestamp Konvertierung zu verständlichem Datum
                 const timeStamp = Number(doc.storeDate);
@@ -179,7 +183,7 @@ function findDocumentByHash(){
                 const readableDate = date.toLocaleString();
 
                 //Dokumentdaten anzeigen
-                listItem.textContent = `Dokument: ${doc.docName}, Hash: ${doc.ipfsHash}, Zeitstempel: ${readableDate}`;
+                listItem.innerHTML = `Dokument: ${doc.docName} <br> Hash: ${doc.ipfsHash} <br> Zeitstempel: ${readableDate}`;
 
                 //Buttons zur Ansicht hinzufügen
                 listItem.appendChild(buttonsContainer);
@@ -212,17 +216,38 @@ async function deleteDocument(paragraph,hash){
 async function concatenateAsyncIterable(asyncIterable) {
     let result = new Uint8Array();
 
-    // Iterate over the AsyncIterable
+    // Über den AsyncIterable iterieren
     for await (const uint8Array of asyncIterable) {
-        // Concatenate Uint8Arrays
         result = new Uint8Array([...result, ...uint8Array]);
     }
 
     return result;
 }
 
-//File Content von Ipfs
-async function getDocumentContentFromIPFS(hash) {
+// File Content von Ipfs
+async function getContentFromIPFS(ipfsHash) {
+    try {
+        // Content von IPFS anfordern
+        const response = await fetch(`http://localhost:8080/ipfs/${ipfsHash}`);
+
+        // Check, ob es funktioniert hat
+        if (!response.ok) {
+            throw new Error(`Failed to fetch PDF from IPFS. Status: ${response.status}`);
+        }
+
+        // Die Antwort als ArrayBuffer lesen
+        const arrayBuffer = await response.arrayBuffer();
+
+        // Arraybuffer returnen
+        return arrayBuffer;
+    } catch (error) {
+        console.error('Error fetching PDF from IPFS:', error);
+        throw error;
+    }
+}
+
+// File Content von Ipfs für txt oder String
+async function getStringContentFromIPFS(hash) {
     try {
         // File von IPFS holen mit CID
         const content = await ipfs.cat(`/${hash}`);
@@ -231,7 +256,7 @@ async function getDocumentContentFromIPFS(hash) {
 
         const concatenatedUint8Array = await concatenateAsyncIterable(asyncIterable);
 
-        // Convert Uint8Array to string for demonstration
+        // Zu String konvertieren
         const resultString = new TextDecoder().decode(concatenatedUint8Array);
 
         return resultString;
@@ -249,21 +274,63 @@ async function downloadFile(hash) {
             const doc = result;
 
             const fileName = doc.docName;
-            const fileContent = await getDocumentContentFromIPFS(hash);
 
-            //Blob für Dokument Inhalt
-            const blob = new Blob([fileContent]);
+            // File Extension holen
+            const fileExtension = getFileExtension(fileName);
 
-            // Downloadlink für Dokument
-            const downloadLink = document.createElement('a');
-            downloadLink.href = URL.createObjectURL(blob);
-            downloadLink.download = fileName;
+            //Herangehensweise für Dokumente die PDF Format haben
+            if (fileExtension === 'pdf') {
 
-            // Link auf der Seite generieren, klicken und wieder löschen
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
+                const fileContentPDF = await getContentFromIPFS(hash);
+
+                // Bei PDF-Dateien wird ein Blob erstellt und das Dokument in einem extra Fenster geöffnet
+                const blob = new Blob([fileContentPDF], { type: 'application/pdf' });
+                const viewerWindow = window.open('');
+                const objectURL = URL.createObjectURL(blob);
+                viewerWindow.location.href = objectURL;
+                URL.revokeObjectURL(objectURL);
+            } else if (fileExtension === 'txt'){
+                // für Files die txt oder String Format haben
+                const fileContent = await getStringContentFromIPFS(hash);
+
+                //Blob für Dokument Inhalt
+                const blob = new Blob([fileContent]);
+
+                // Downloadlink für Dokument
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = fileName;
+
+                // Link auf der Seite generieren, klicken und wieder löschen
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            } else {
+                // Für docx und andrer Formate
+                const fileContent = await getContentFromIPFS(hash);
+
+                //Blob für Dokument Inhalt
+                const blob = new Blob([fileContent], { type: 'application/octet-stream' });
+
+                // Downloadlink für Dokument
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = fileName;
+
+                // Link auf der Seite generieren, klicken und wieder löschen
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+
         });
+}
+
+//Dokumententyp zurückgeben
+function getFileExtension(fileName) {
+    const parts = fileName.split('.');
+    const extension = parts[parts.length - 1].toLowerCase();
+    return extension;
 }
 
 // Aktualisiere die Übersicht der Dokumente
