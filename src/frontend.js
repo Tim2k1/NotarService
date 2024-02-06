@@ -147,7 +147,7 @@ function findDocumentByHash(){
     //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
     contract.methods.getDocumentbyHash(ipfsHash).call()
         .then(result => {
-            //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen und erstellt Ansicht für Dokument
+            //Speichert das empfangene Dokument aus dem Backend zwischen und erstellt Ansicht für Dokument
             const doc = result;
 
             //Ansicht nur Erstellen, wenn es einen passenden Hash gibt
@@ -270,7 +270,7 @@ async function downloadFile(hash) {
     //Methode aus Smart Contract, die mithilfe des eingegebenen Hash ein Dokument/CID returned
     contract.methods.getDocumentbyHash(hash).call()
         .then(async result => {
-            //Speichert das empfangene Array mit Dokumenten aus dem Backend zwischen und erstellt Ansicht für Dokument
+            //Speichert das empfangene Dokument aus dem Backend zwischen
             const doc = result;
 
             const fileName = doc.docName;
@@ -278,9 +278,8 @@ async function downloadFile(hash) {
             // File Extension holen
             const fileExtension = getFileExtension(fileName);
 
-            //Herangehensweise für Dokumente die PDF Format haben
             if (fileExtension === 'pdf') {
-
+                //Herangehensweise für Dokumente die PDF Format haben
                 const fileContentPDF = await getContentFromIPFS(hash);
 
                 // Bei PDF-Dateien wird ein Blob erstellt und das Dokument in einem extra Fenster geöffnet
@@ -290,7 +289,7 @@ async function downloadFile(hash) {
                 viewerWindow.location.href = objectURL;
                 URL.revokeObjectURL(objectURL);
             } else if (fileExtension === 'txt'){
-                // für Files die txt oder String Format haben
+                // Für Files die txt oder String Format haben
                 const fileContent = await getStringContentFromIPFS(hash);
 
                 //Blob für Dokument Inhalt
