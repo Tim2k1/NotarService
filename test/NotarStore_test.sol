@@ -51,7 +51,7 @@ contract testSuite {
         NotarStore.Document[] memory documentArray = notarTest.getDocuments();
 
         // Check if the returned documentArray length is correct
-        Assert.equal(documentArray.length, 4, "Returned documentArray length should be 3");
+        Assert.equal(documentArray.length, 4, "Returned documentArray length should be 4");
 
         // Check if the returned document details are correct
         Assert.equal(documentArray[1].docName, "Document1", "Document1 name does not match");
