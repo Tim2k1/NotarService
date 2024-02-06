@@ -81,6 +81,7 @@ function updateDocumentList() {
 
             //Erstelle für alle Dokumente eine Ansicht auf der Übersichtsliste
             documentArray.forEach((doc) => {
+                //Prüen ob das Dokument auch dem aktuellen Account gehört
                 if (doc.owner.toLowerCase() === accounts[0]) {
                     // Entsprechende Stelle für Ansicht holen
                     const listItem = document.createElement('div');
@@ -150,8 +151,8 @@ function findDocumentByHash(){
             //Speichert das empfangene Dokument aus dem Backend zwischen und erstellt Ansicht für Dokument
             const doc = result;
 
-            //Ansicht nur Erstellen, wenn es einen passenden Hash gibt
-            if(doc.docName !== ''){
+            //Ansicht nur Erstellen, wenn es einen passenden Hash gibt und der User auch der Owner ist
+            if(doc.docName !== '' && doc.owner.toLowerCase() === accounts[0]){
                 // Entsprechende Stelle für Ansicht holen
                 const documentContent = document.getElementById("documentContent");
 
