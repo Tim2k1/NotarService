@@ -45,7 +45,7 @@ async function uploadDocument() {
             contract.methods.Store(file.name,ipfsHash,accounts[0]).send({ from: accounts[0] });
 
             // Zeige den generierten Hash in einem Popup an
-            //showHashPopup(ipfsHash);
+            showHashPopup(ipfsHash);
 
             // Aktualisiere die Übersicht der Dokumente
             updateDocumentList();
@@ -127,16 +127,22 @@ function updateDocumentList() {
 //Pop-up mit Hash anzeigen
 function showHashPopup(hash) {
     const hashPopup = document.getElementById('hashPopup');
+    const overlay = document.getElementById('overlay');
     const hashValue = document.getElementById('hashValue');
 
-    hashValue.textContent = hash;
+    hashValue.textContent = `Hash: ${hash}`;
     hashPopup.style.display = 'block';
+    overlay.style.display = 'block';
 }
 
+document.getElementById("closePopUp").addEventListener("click", closePopup);
 //Pop-up schließen
 function closePopup() {
     const hashPopup = document.getElementById('hashPopup');
+    const overlay = document.getElementById('overlay');
+
     hashPopup.style.display = 'none';
+    overlay.style.display = 'none';
 }
 
 document.getElementById("findDocButton").addEventListener("click", findDocumentByHash);
